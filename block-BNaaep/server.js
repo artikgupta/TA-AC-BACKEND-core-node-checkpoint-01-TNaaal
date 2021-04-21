@@ -7,7 +7,7 @@ let qs = require("querystring");
 
 let IndexDir = path.join(__dirname, "index.html");
 let StylesDir = path.join(__dirname, "assets/stylesheets/style.css");
-let ImagesDir = path.join(__dirname, "assets/images");
+let ImagesDir = path.join(__dirname, "assets");
 
 let ContactDir = path.join(__dirname, "contacts/");
 
@@ -89,11 +89,12 @@ function handleRequest(req, res) {
       var fileStream = fs.createReadStream(cssPath, "UTF-8");
       res.writeHead(200, { "Content-Type": "text/css" });
       fileStream.pipe(res);
-    } else if (req.url.match(".png$")) {
-      var imgPath = (ImagesDir, "assets", "./assets/images");
-      var fileStream = fs.createReadStream(imgPath, "UTF-8");
-      res.writeHead(200, { "Content-Type": "image/png" });
-      fileStream.pipe(res);
+    } else if (
+      req.method === 'GET' &&
+      ['png', 'svg','jpg'].includes(req.url.split('.').pop())
+    ) {
+      console.log(__dirname)
+      fs.createReadStream(path.join(__dirname, req.url)).pipe(res);
     }else{
       res.end(`Page not found`)
     }
